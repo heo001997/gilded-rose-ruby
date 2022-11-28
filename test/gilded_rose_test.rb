@@ -1,5 +1,4 @@
-require 'simplecov'
-SimpleCov.start
+require File.expand_path("./test/test_helper.rb")
 require File.expand_path("./gilded_rose.rb")
 require 'minitest/autorun'
 
@@ -8,6 +7,34 @@ class GildedRoseTest < Minitest::Test
     items = [Item.new("foo", 0, 0)]
     GildedRose.new(items).update_quality()
     assert_equal items[0].name, "foo"
+  end
+
+  def test_backstage_pass
+    assert_backstage_pass_quality(22, 8, 20)
+    assert_backstage_pass_quality(23, 4, 20)
+    assert_backstage_pass_quality(0, -1, 20)
+  end
+
+  def test_aged_brie
+    assert_aged_brie_quality(22, 0, 20)
+  end
+
+  def test_generic
+    items = [Item.new("foo", -1, 3)]
+    GildedRose.new(items).update_quality
+    assert_equal(1, items[0].quality)
+  end
+
+  def assert_aged_brie_quality(expected, sell_in, quality)
+    items = [Item.new("Aged Brie", sell_in, quality)]
+    GildedRose.new(items).update_quality
+    assert_equal(expected, items[0].quality)
+  end
+
+  def assert_backstage_pass_quality(expected, sell_in, quality)
+    items = [Item.new("Backstage passes to a TAFKAL80ETC concert", sell_in, quality)]
+    GildedRose.new(items).update_quality
+    assert_equal(expected, items[0].quality)
   end
 
   def test_report
