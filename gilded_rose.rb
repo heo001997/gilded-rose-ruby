@@ -10,60 +10,40 @@ class GildedRose
     @items.each do |item|
       if is_sulfuras?(item)
       elsif is_generic?(item)
-        handle_generic(item)
+        if is_quality_more_than?(item, 0)
+          item.quality -= 1
+          item.sell_in -= 1
+        end
+        if is_sell_less_than?(item, 0) && is_quality_more_than?(item, 0)
+          item.quality -= 1
+        end
       elsif is_aged_brie?(item)
-        handle_aged_brie(item)
+        if is_quality_less_than?(item, 50)
+          item.quality += 1
+          item.sell_in -= 1
+        end
+        if is_sell_less_than?(item, 0) && is_quality_less_than?(item, 50)
+          item.quality += 1
+        end
       elsif is_backstage?(item)
-        handle_backstage(item)
+        if is_quality_less_than?(item, 50)
+          item.quality += 1
+          item.sell_in -= 1
+          if is_sell_less_than?(item, 11) && is_quality_less_than?(item, 50)
+            item.quality += 1
+          end
+          if is_sell_less_than?(item, 6) && is_quality_less_than?(item, 50)
+            item.quality += 1
+          end
+        end
+        if is_sell_less_than?(item, 0)
+          item.quality = item.quality - item.quality
+        end
       end
     end
   end
 
   private
-
-  def handle_backstage(item)
-    if is_quality_less_than?(item, 50)
-      item.quality += 1
-      item.sell_in -= 1
-      if is_sell_less_than?(item, 11)
-        if is_quality_less_than?(item, 50)
-          item.quality += 1
-        end
-      end
-      if is_sell_less_than?(item, 6)
-        if is_quality_less_than?(item, 50)
-          item.quality += 1
-        end
-      end
-    end
-    if is_sell_less_than?(item, 0)
-      item.quality = item.quality - item.quality
-    end
-  end
-
-  def handle_aged_brie(item)
-    if is_quality_less_than?(item, 50)
-      item.quality += 1
-      item.sell_in -= 1
-    end
-    if is_sell_less_than?(item, 0)
-      if is_quality_less_than?(item, 50)
-        item.quality += 1
-      end
-    end
-  end
-
-  def handle_generic(item)
-    if is_quality_more_than?(item, 0)
-      item.quality -= 1
-      item.sell_in -= 1
-    end
-    if is_sell_less_than?(item, 0)
-      if is_quality_more_than?(item, 0)
-        item.quality -= 1
-      end
-    end
-  end
 
   def is_generic?(item)
     !(is_aged_brie?(item) || is_backstage?(item) || is_sulfuras?(item))
