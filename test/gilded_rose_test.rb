@@ -1,8 +1,10 @@
 require File.expand_path("./test/test_helper.rb")
 require File.expand_path("./gilded_rose.rb")
 require 'minitest/autorun'
+# require 'mutant/minitest/coverage'
 
 class GildedRoseTest < Minitest::Test
+  # cover "Inventory"
   def test_foo
     items = [Item.new("foo", 0, 0)]
     GildedRose.new(items).update_quality()
